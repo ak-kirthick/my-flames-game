@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FLAMES - Predict Your Compatibility</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #000; color: #0f0; text-align: center; padding: 50px; }
+        .container { border: 2px solid #0f0; display: inline-block; padding: 30px; border-radius: 10px; }
+        input { background: #000; border: 1px solid #0f0; color: #0f0; padding: 10px; margin: 10px; text-transform: uppercase; }
+        button { background: #0f0; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+        #output { margin-top: 20px; white-space: pre-wrap; font-size: 1.2em; }
+        .result { color: gold; font-weight: bold; font-size: 1.5em; border-top: 2px solid #0f0; margin-top: 20px; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>F L A M E S</h1>
+    <p>PREDICT YOUR COMPATIBILITY</p>
+    
+    <input type="text" id="name1" placeholder="NAME 1 (UPPERCASE)">
+    <br>
+    <input type="text" id="name2" placeholder="NAME 2 (UPPERCASE)">
+    <br>
+    <button onclick="runFlames()">CALCULATE FATE</button>
+
+    <div id="output"></div>
+</div>
+
+<script>
+    // These objects mimic your C++ Classes
+    const Fates = {
+        'F': "FRIENDSHIP",
+        'L': "LOVE",
+        'A': "AFFECTION",
+        'M': "MARRIAGE",
+        'E': "ENEMITY",
+        'S': "SIBLINGHOOD"
+    };
+
+    function runFlames() {
+        let n1 = document.getElementById('name1').value.toUpperCase().replace(/\s/g, '');
+        let n2 = document.getElementById('name2').value.toUpperCase().replace(/\s/g, '');
+        let output = document.getElementById('output');
+        
+        if (!n1 || !n2) { alert("Enter both names!"); return; }
+
+        let a = n1.split('');
+        let b = n2.split('');
+        let common = [];
+
+        // Common letters logic (Direct port of your nested loop)
+        for (let i = 0; i < a.length; i++) {
+            for (let j = 0; j < b.length; j++) {
+                if (a[i] === b[j]) {
+                    common.push(a[i]);
+                    a.splice(i, 1);
+                    b.splice(j, 1);
+                    i--;
+                    break;
+                }
+            }
+        }
+
+        let count = a.length + b.length;
+        let text = `Common letters: ${common.join(',')}\n`;
+        text += `Names after removal: ${a.join('')} , ${b.join('')}\n`;
+        text += `Total count: ${count}\n\n`;
+
+        if (count === 0) {
+            output.innerHTML = "Forget your compatibility.. bye";
+            return;
+        }
+
+        // The FLAMES circular elimination logic
+        let index = "FLAMES".split('');
+        let pointer = 0;
+
+        while (index.length > 1) {
+            pointer = (pointer + count - 1) % index.length;
+            index.splice(pointer, 1);
+        }
+
+        const finalLetter = index[0];
+        text += `<div class="result">${Fates[finalLetter]}</div>`;
+        
+        output.innerHTML = text;
+    }
+</script>
+
+</body>
+</html>
